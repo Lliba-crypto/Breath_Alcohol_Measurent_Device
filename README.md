@@ -62,5 +62,7 @@ Introduction to Electric and Telecomunication projects
 
 - Initialize LCD:
   ```c
-  LiquidCrystal_I2C lcd;
-  LCD_Init(&lcd, &hi2c1, 0x27, 16, 2);
+  LiquidCrystal_I2C lcd;               - Tạo biến struct lcd.
+  LCD_Init(&lcd, &hi2c1, 0x27, 16, 2); - Khởi tạo LCD: gán handle I2C (hi2c1), địa chỉ I2C (0x27), số cột (16), số hàng (2).
+- Application:
+
