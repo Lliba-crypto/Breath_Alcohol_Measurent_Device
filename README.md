@@ -53,8 +53,8 @@ Introduction to Electric and Telecomunication projects
 
 ### 1.6.1. Adding Necessary Libraries
 
-- Add `liquidcrystal_i2c.h` inside `Core/Inc` folder.
-- Add `liquidcrystal_i2c.c` inside `Core/Src` folder.
+- Add `lcd.h` inside `Core/Inc` folder.
+- Add `lcd.c` inside `Core/Src` folder.
 - Modify `main.c` at:
   - `/* Includes ------------------------------------------------------------------*/`
   - `/* USER CODE BEGIN Includes */`
