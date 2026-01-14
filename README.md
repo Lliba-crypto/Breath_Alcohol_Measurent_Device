@@ -1,6 +1,9 @@
 # Breath_Alcohol_Measurent_Device
 Introduction to Electric and Telecomunication projects
 
+
+📌 README này vừa mô tả phần cứng, kết nối, cấu hình `.ioc`, vừa hướng dẫn cách thêm thư viện LCD và viết code trong `main.c`.  
+
 # Breath Alcohol Measurement Project (STM32 Blue Pill)
 
 ## 1.1. Deliverables
@@ -62,7 +65,32 @@ Introduction to Electric and Telecomunication projects
 
 - Initialize LCD:
   ```c
-  LiquidCrystal_I2C lcd;               - Tạo biến struct lcd.
-  LCD_Init(&lcd, &hi2c1, 0x27, 16, 2); - Khởi tạo LCD: gán handle I2C (hi2c1), địa chỉ I2C (0x27), số cột (16), số hàng (2).
+  LiquidCrystal_I2C lcd;               // Tạo biến struct lcd.
+  LCD_Init(&lcd, &hi2c1, 0x27, 16, 2); // Khởi tạo LCD: gán handle I2C (hi2c1), địa chỉ I2C (0x27), số cột (16), số hàng (2).
 - Application:
+  ~~~c
+  LCD_Clear(&lcd);              // Xóa toàn màn hình
+  LCD_Backlight(&lcd);          // Bật đèn nền LCD
+  LCD_SetCursor(&lcd, 0, 0);    // Đặt con trỏ tại vị trí (0,0)
+  LCD_Print(&lcd, "Hello world!"); // In chuỗi tại vị trí con trỏ
+- Đọc giá trị MQ-3 qua ADC, chuyển đổi sang điện áp và hiển thị BAC:
+  ~~~c
+  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+  uint32_t adc_value = HAL_ADC_GetValue(&hadc1);
+  float voltage = (adc_value / 4095.0f) * 3.3f;
+  float bac = voltage * 0.4f; // hệ số giả định, cần hiệu chuẩn
+
+  char buffer[16];
+  snprintf(buffer, sizeof(buffer), "BAC: %.2f", bac);
+  LCD_SetCursor(&lcd, 0, 0);
+  LCD_Print(&lcd, buffer);
+- Kiểm tra ngưỡng BAC để bật LED và buzzer:
+  ~~~c
+  if(bac > 0.25f) {
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET); // LED ON
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);     // Buzzer kêu
+  } else {
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);   // LED OFF
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);       // Buzzer tắt
+  }
 
